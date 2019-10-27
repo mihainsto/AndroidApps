@@ -11,25 +11,24 @@ import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
 
+    lateinit var diceImage: ImageView
+    lateinit var diceImage2: ImageView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val rollButton: Button = findViewById(R.id.roll_button)
-        val countButton: Button = findViewById(R.id.count_button)
-        val resetButton: Button = findViewById(R.id.reset_button)
 
+        diceImage = findViewById(R.id.dice_image)
+        diceImage2 = findViewById(R.id.dice_image2)
+        val rollButton: Button = findViewById(R.id.roll_button)
+        val resetButton: Button = findViewById(R.id.reset_button)
         rollButton.setOnClickListener{rollDice()}
-        countButton.setOnClickListener{countUp()}
         resetButton.setOnClickListener{resetBtn()}
+
     }
 
-
-    private fun rollDice(){
+    private fun getRandomImage(): Int{
         val randomInt = Random.nextInt(6) + 1
-        //val resultText: TextView = findViewById(R.id.result_text)
-        val diceImage: ImageView = findViewById(R.id.dice_image)
-
-        //resultText.text = rendomInt.toString()
         val drawableResource = when (randomInt) {
             1 -> R.drawable.dice_1
             2 -> R.drawable.dice_2
@@ -38,8 +37,21 @@ class MainActivity : AppCompatActivity() {
             5 -> R.drawable.dice_5
             else -> R.drawable.dice_6
         }
-        diceImage.setImageResource(drawableResource)
+        return drawableResource
     }
+    private fun rollDice(){
+
+        //val resultText: TextView = findViewById(R.id.result_text)
+        //val diceImage: ImageView = findViewById(R.id.dice_image)
+
+        //resultText.text = rendomInt.toString()
+        var drawableResource = getRandomImage()
+        diceImage.setImageResource(drawableResource)
+        drawableResource = getRandomImage()
+        diceImage2.setImageResource(drawableResource)
+
+    }
+
     private fun countUp(){
         /*val resultText: TextView = findViewById(R.id.result_text)
         var number = Integer.parseInt(resultText.text.toString())
@@ -51,8 +63,8 @@ class MainActivity : AppCompatActivity() {
 
     }
     private fun resetBtn(){
-        /*val resultText : TextView= findViewById(R.id.result_text)
-        resultText.text = "0"*/
+        diceImage2.setImageResource(R.drawable.empty_dice)
+        diceImage.setImageResource(R.drawable.empty_dice)
     }
 }
 
