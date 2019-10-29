@@ -12,6 +12,7 @@ import android.util.TypedValue
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import java.lang.Exception
 import java.net.URL
 import java.security.AccessController.getContext
@@ -74,29 +75,54 @@ class MainActivity : AppCompatActivity() {
 
     }
     private fun submitButtonClicked(){
-        //val email = emailInput.text.toString()
-        //val password = passwordInput.text.toString()
+        val email = emailInput.text.toString()
+        val password = passwordInput.text.toString()
+        if (email == "" || password == "" ){
+            return
+        }
 
         var api_result = null
 
 
+        if(curentPage == "Login") {
+            val api_url = "http://40.113.129.201/auth/$email/$password"
+            doAsync {
+                try {
+                    val result = URL(api_url).readText()
+                    //Log.d("Result","Result: ${result.toString()}")
+                    uiThread {
+                        recivedLoginApiResponse(result.toString())
+                    }
+                } catch (e: Exception) {
+                    Log.d("Exception", "Exception: ${e.toString()}")
 
-        doAsync {
-            try{
-                val result = URL("https://jsonplaceholder.typicode.com/todos/1").readText()
-                //Log.d("Result","Result: ${result.toString()}")
-                uiThread {
-                    recivedLoginApiResponse(result.toString())
                 }
             }
-            catch(e: Exception){
-                Log.d("Exception","Exception: ${e.toString()}")
+        }
+        else{
+            val api_url = "http://40.113.129.201/register/$email/$password"
+            doAsync {
+                try {
+                    val result = URL(api_url).readText()
+                    //Log.d("Result","Result: ${result.toString()}")
+                    uiThread {
+                        recivedSingupApiResponse(result.toString())
+                    }
+                } catch (e: Exception) {
+                    Log.d("Exception", "Exception: ${e.toString()}")
+
+                }
             }
         }
-
 
     }
     private fun recivedLoginApiResponse(response: String){
         Log.d("Result","Result: ${response.toString()}")
+        Toast.makeText(this@MainActivity, response.toString(), Toast.LENGTH_SHORT).show()
+
+    }
+    private fun recivedSingupApiResponse(response: String){
+        Log.d("Result","Result: ${response.toString()}")
+        Toast.makeText(this@MainActivity, response.toString(), Toast.LENGTH_SHORT).show()
     }
 }
