@@ -7,17 +7,29 @@ import androidx.core.app.ComponentActivity
 import androidx.core.app.ComponentActivity.ExtraData
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import android.util.Log
 import android.util.TypedValue
 import android.view.View
+import android.widget.EditText
 import android.widget.TextView
+import java.lang.Exception
+import java.net.URL
 import java.security.AccessController.getContext
-
+import org.jetbrains.anko.activityUiThread
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.toast
+import org.jetbrains.anko.uiThread
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var loginButton: Button
     lateinit var singupButton: Button
     lateinit var forgotHyperlink: TextView
+    lateinit var submitButton: Button
+
+    lateinit var emailInput: EditText
+    lateinit var passwordInput: EditText
+
     var curentPage = "Login"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,9 +39,13 @@ class MainActivity : AppCompatActivity() {
         loginButton = findViewById(R.id.loginButton)
         singupButton = findViewById(R.id.singupButton)
         forgotHyperlink = findViewById(R.id.forgotHyperlink)
+        submitButton = findViewById(R.id.submitButton)
+        emailInput = findViewById(R.id.inputEmail)
+        passwordInput = findViewById(R.id.inputPassword)
 
         loginButton.setOnClickListener{ChangePageButtonClicked()}
         singupButton.setOnClickListener{ChangePageButtonClicked()}
+        submitButton.setOnClickListener{submitButtonClicked()}
     }
 
     private fun ChangePageButtonClicked(){
@@ -57,5 +73,30 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
+    private fun submitButtonClicked(){
+        //val email = emailInput.text.toString()
+        //val password = passwordInput.text.toString()
 
+        var api_result = null
+
+
+
+        doAsync {
+            try{
+                val result = URL("https://jsonplaceholder.typicode.com/todos/1").readText()
+                //Log.d("Result","Result: ${result.toString()}")
+                uiThread {
+                    recivedLoginApiResponse(result.toString())
+                }
+            }
+            catch(e: Exception){
+                Log.d("Exception","Exception: ${e.toString()}")
+            }
+        }
+
+
+    }
+    private fun recivedLoginApiResponse(response: String){
+        Log.d("Result","Result: ${response.toString()}")
+    }
 }
