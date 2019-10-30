@@ -1,5 +1,6 @@
 package com.example.tasker
 
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -13,6 +14,8 @@ import android.view.View
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import com.google.gson.GsonBuilder
+import kotlinx.android.synthetic.main.activity_main.*
 import java.lang.Exception
 import java.net.URL
 import java.security.AccessController.getContext
@@ -72,12 +75,15 @@ class MainActivity : AppCompatActivity() {
             forgotHyperlink.visibility = View.VISIBLE
             curentPage = "Login"
         }
-
+        AlertTextView_loginSView.visibility = View.GONE
     }
     private fun submitButtonClicked(){
         val email = emailInput.text.toString()
         val password = passwordInput.text.toString()
         if (email == "" || password == "" ){
+            AlertTextView_loginSView.text = "Please enter your credentials"
+            AlertTextView_loginSView.setTextColor(Color.RED)
+            AlertTextView_loginSView.visibility = View.VISIBLE
             return
         }
 
@@ -118,11 +124,42 @@ class MainActivity : AppCompatActivity() {
     }
     private fun recivedLoginApiResponse(response: String){
         Log.d("Result","Result: ${response.toString()}")
-        Toast.makeText(this@MainActivity, response.toString(), Toast.LENGTH_SHORT).show()
+        //Toast.makeText(this@MainActivity, response.toString(), Toast.LENGTH_SHORT).show()
+
+        val gson = GsonBuilder().create()
+        val logResponse = gson.fromJson(response,LoginResponse::class.java)
+        if (logResponse.result == "True"){
+            //Toast.makeText(this@MainActivity, "Login Sucessful", Toast.LENGTH_SHORT).show()
+            doOnSucessfulLogin()
+        } else{
+            AlertTextView_loginSView.text = "Incorrect login credentials"
+            AlertTextView_loginSView.setTextColor(Color.RED)
+            AlertTextView_loginSView.visibility = View.VISIBLE
+        }
 
     }
     private fun recivedSingupApiResponse(response: String){
         Log.d("Result","Result: ${response.toString()}")
-        Toast.makeText(this@MainActivity, response.toString(), Toast.LENGTH_SHORT).show()
+        //Toast.makeText(this@MainActivity, response.toString(), Toast.LENGTH_SHORT).show()
+        val gson = GsonBuilder().create()
+        val logResponse = gson.fromJson(response,singupResponse::class.java)
+        if (logResponse.stauts == "done"){
+            //Toast.makeText(this@MainActivity, "Singup Sucessful", Toast.LENGTH_SHORT).show()
+            AlertTextView_loginSView.text = "Singup Successful"
+            AlertTextView_loginSView.setTextColor(Color.GREEN)
+            AlertTextView_loginSView.visibility = View.VISIBLE
+
+        } else{
+            AlertTextView_loginSView.text = "Singup error"
+            AlertTextView_loginSView.setTextColor(Color.RED)
+            AlertTextView_loginSView.visibility = View.VISIBLE
+        }
+
+    }
+    private fun doOnSucessfulLogin(){
+        TODO()
     }
 }
+
+class LoginResponse(val result: String)
+class singupResponse(val stauts: String)
