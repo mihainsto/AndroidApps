@@ -5,4 +5,5 @@
     <string name="enter_your_password_here">Enter your password here</string>
     <string name="enter_your_email_here">Enter your email here</string>
     <string name="forgot_text"><u>Forgot email/ password?</u></string>
+    <string name="enter_new_task">Enter new Task</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.example.tasker
 
+import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -157,7 +158,9 @@ class MainActivity : AppCompatActivity() {
 
     }
     private fun doOnSucessfulLogin(){
-        TODO()
+        val intent = Intent(this, activity_task::class.java)
+        intent.putExtra("loggedUser", emailInput.text.toString())
+        startActivity(intent)
     }
 }
 
